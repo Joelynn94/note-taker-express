@@ -2,17 +2,18 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 
-// const noteRoutes = require('./routes/notes')
-const homeRoute = require('./routes/html')
 
 const app = express();
+app.use(express.static('public'))
 const PORT = process.env.PORT || 8080;
 
 app
 	.use(express.urlencoded({ extended: true }))
-	.use(express.json())
-	// .use(noteRoutes)
-	.use(homeRoute);
+	.use(express.json());
+
+app.use('/*', (req, res) => {
+	res.sendfile(path.join(__dirname, './public/index.html'));
+});
 
 
 app.listen(PORT, () => {
