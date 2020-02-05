@@ -18,20 +18,53 @@ app
 // ===================================================
 
 // Displays the index page
-app.get('/', (_, res) => {
-	res.sendfile(path.join(__dirname, "./public/index.html"));
+app.get('/', (_, response) => {
+	response.sendfile(path.join(__dirname, "./public/index.html"));
 });
 
 // Displays the notes page
-app.get("/notes", (_, res) => {
-	res.sendFile(path.join(__dirname, "./public/notes.html"));
+app.get("/notes", (_, response) => {
+	response.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
-// Displays the api route for the notes 
-app.get("/api/notes", (_, res) => {
-	const storedData = fs.readFileSync("./public/db/db.json", "utf8");
-	return res.json(JSON.parse(storedData));
+
+// Create a new array to save the notes
+let notesArray = [{"title":"Title","text":"Text"}];
+// Read the file where the notes are stored
+let storedData = fs.readFileSync("./public/db/db.json", "utf8");
+
+// Displays the api route for all the notes 
+app.get("/api/notes", (_, response) => {
+	return response.json(JSON.parse(storedData));
 });
+
+// Displays the api route for individual note
+app.get("/api/notes/:note", (request, response) => {
+	// get what the user types in
+	const singleNote = request.params.note;
+
+	// loop through the array to find the title and return the response to the user
+  for (var i = 0; i < notesArray.length; i++) {
+    if (singleNote === notesArray[i].title) {
+      return response.json(notesArray[i]);
+    }
+	}
+	
+	// const findNote = notesArray.find(({ title }) => title === singleNote);
+
+	// Return false is no data comes back
+  return response.json(false);
+
+});
+
+// Create New Note 
+app.post("/api/notes", function(request, response) {
+	// req.body is the json post sent from the user 
+	const newNote = request.body;
+
+	console.log(newNote);
+
+})
 
 // Starts the server to begin listening on the port
 // ===================================================
