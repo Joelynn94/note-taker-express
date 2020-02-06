@@ -29,7 +29,7 @@ app.get("/notes", (_, response) => {
 
 
 // Create a new array to save the notes
-let notesArray = [{"title":"Title","text":"Text"}];
+let notesArray = [];
 // Read the file where the notes are stored
 let storedData = fs.readFileSync("./public/db/db.json", "utf8");
 
@@ -62,9 +62,24 @@ app.post("/api/notes", function(request, response) {
 	// req.body is the json post sent from the user 
 	const newNote = request.body;
 
-	console.log(newNote);
+	// reads the db.json file
+	const data = fs.readFileSync("./public/db/db.json", "utf8");
+	// converts the note strings into an object
+	notesArray = JSON.parse(data);
 
-})
+	// pushes new note to the notes array
+	notesArray.push(newNote);
+	// converts the new note object back to json
+	const noteJSON = JSON.stringify(notesArray);
+
+	// writes to the db.json file
+	fs.writeFileSync("./public/db/db.json", noteJSON, "utf8", err => {
+		if (err) {
+			throw err;
+		}
+	});
+
+});
 
 // Starts the server to begin listening on the port
 // ===================================================
