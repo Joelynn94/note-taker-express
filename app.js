@@ -14,7 +14,7 @@ app
 	.use(express.static("public"))
 	.use(express.json());
 
-// Routes
+// GET HTML Routes
 // ===================================================
 
 // Displays the index page
@@ -27,6 +27,8 @@ app.get("/notes", (_, response) => {
 	response.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
+// GET API Routes
+// ===================================================
 
 // Create a new array to save the notes
 let notesArray = [];
@@ -57,10 +59,20 @@ app.get("/api/notes/:note", (request, response) => {
 
 });
 
+// POST Routes
+// ===================================================
+
+// Creates random ID for note
+const id = () => {
+	return  Math.floor(Math.random() * 2000);
+}
+
 // Create New Note 
 app.post("/api/notes", function(request, response) {
 	// req.body is the json post sent from the user 
 	const newNote = request.body;
+	// adding the random id to each new note
+	newNote.id = id();
 
 	// reads the db.json file
 	const data = fs.readFileSync("./public/db/db.json", "utf8");
@@ -78,6 +90,32 @@ app.post("/api/notes", function(request, response) {
 			throw err;
 		}
 	});
+
+	// sends the new back to the user
+	response.json(newNote);
+});
+
+// DELETE Route
+// ===================================================
+
+// When thetrashcan icon is clicked...
+// Deletes the note by the id in the db json file.
+app.delete("/api/notes/:id", function(request, response) {
+	// req.body is the json id sent from the user 
+	const deletedNote = request.params.id;
+
+	notesArray = notesArray.filter((note) => {
+		return note.id != deletedNote;
+	});
+
+	console.log(notesArray)
+	const deletedNotes = JSON.stringify(notesArray);
+
+	fs.writeFileSync("./db/db.json", deletedNotes, "utf8", err => {
+		if (err) throw err;
+	});
+
+	response.json(deletedNotes);
 
 });
 
