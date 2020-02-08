@@ -64,7 +64,7 @@ app.get("/api/notes/:note", (request, response) => {
 
 // Creates random ID for note
 const id = () => {
-	return  Math.floor(Math.random() * 2000);
+	return  Math.floor(Math.random() * 200);
 }
 
 // Create New Note 
@@ -78,7 +78,7 @@ app.post("/api/notes", function(request, response) {
 	}
 
 	console.log(newNote)
-	
+
 	// pushes new note to the notes array
 	notesArray.push(newNote);
 	// converts the new note object back to json
@@ -91,6 +91,7 @@ app.post("/api/notes", function(request, response) {
 		}
 	});
 
+	console.log(err)
 	// sends the new back to the user
 	response.json(newNote);
 });
