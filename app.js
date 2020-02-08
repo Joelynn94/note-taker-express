@@ -30,14 +30,15 @@ app.get("/notes", (_, response) => {
 // GET API Routes
 // ===================================================
 
-// Create a new array to save the notes
-let notesArray = [];
 // Read the file where the notes are stored
 let storedData = fs.readFileSync("./public/db/db.json", "utf8");
 
+// Create array to save the notes
+let notesArray = JSON.parse(storedData);
+
 // Displays the api route for all the notes 
 app.get("/api/notes", (_, response) => {
-	return response.json(JSON.parse(storedData));
+	return response.json(notesArray);
 });
 
 // Displays the api route for individual note
@@ -59,7 +60,7 @@ app.get("/api/notes/:note", (request, response) => {
 
 });
 
-// POST Routes
+// POST Route
 // ===================================================
 
 // Creates random ID for note
@@ -90,13 +91,14 @@ app.post("/api/notes", function(request, response) {
 	const noteJSON = JSON.stringify(notesArray);
 
 	// writes to the db.json file
-	fs.writeFileSync("./public/db/db.json", noteJSON, "utf8", err => {
+	fs.writeFile("./public/db/db.json", noteJSON, "utf8", err => {
 		if (err) {
 			throw err;
 		}
+		// sends the new back to the user
+		response.json(newNote);
 	});
-	// sends the new back to the user
-	response.json(newNote);
+
 });
 
 // DELETE Route
