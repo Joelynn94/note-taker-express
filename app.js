@@ -69,16 +69,16 @@ const id = () => {
 
 // Create New Note 
 app.post("/api/notes", function(request, response) {
-	// req.body is the json post sent from the user 
-	const newNote = request.body;
-	// adding the random id to each new note
-	newNote.id = id();
 
-	// reads the db.json file
-	const data = fs.readFileSync("./public/db/db.json", "utf8");
-	// converts the note strings into an object
-	notesArray = JSON.parse(data);
+	// creates a new note object
+	let newNote = {
+		id: id(),
+		title: request.body.title,
+		text: request.body.text
+	}
 
+	console.log(newNote)
+	
 	// pushes new note to the notes array
 	notesArray.push(newNote);
 	// converts the new note object back to json
