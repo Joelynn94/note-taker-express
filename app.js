@@ -70,6 +70,11 @@ const id = () => {
 // Create New Note 
 app.post("/api/notes", function(request, response) {
 
+	// reads the db.json file
+	const data = fs.readFileSync("./public/db/db.json", "utf8");
+	// converts the note strings into an object
+	notesArray = JSON.parse(data);
+
 	// creates a new note object
 	let newNote = {
 		id: id(),
@@ -90,8 +95,6 @@ app.post("/api/notes", function(request, response) {
 			throw err;
 		}
 	});
-
-	console.log(err)
 	// sends the new back to the user
 	response.json(newNote);
 });
