@@ -27,7 +27,7 @@ router.get('/notes', async (req, res) => {
  * @param {object} res
  * @returns {object} note object
  */
-router.get('/:id', async (req, res) => {
+router.get('/notes/:id', async (req, res) => {
   try {
     // findByPK - obtains only a single entry from the table, using the provided primary key
     const noteData = await Note.findByPk(req.params.id);
@@ -40,7 +40,78 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/seed', async (req, res) => {
+/**
+ * create new note
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} note object
+ */
+router.post('/notes', async (req, res) => {
+  try {
+    // findByPK - obtains only a single entry from the table, using the provided primary key
+    const newNote = await Note.create(req.body);
+    if (!newNote) {
+      res.status(404).json({ message: 'Failed to create note' });
+    }
+    res.status(200).json(newNote);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+/**
+ * update a note
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} note object
+ */
+router.put('/notes/:id', async (req, res) => {
+  try {
+    // findByPK - obtains only a single entry from the table, using the provided primary key
+    const noteData = await Note.update(req.body, {
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (!noteData[0]) {
+      res.status(404).json({ message: 'No note with this id' });
+    }
+    res.status(200).json(noteData);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+/**
+ * delete a note
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} note object
+ */
+router.delete('/notes/:id', async (req, res) => {
+  try {
+    // findByPK - obtains only a single entry from the table, using the provided primary key
+    const noteData = await Note.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (!noteData) {
+      res.status(404).json({ message: 'No note with this id' });
+    }
+    res.status(200).json(noteData);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+/**
+ * seed the database
+ * @param {object} req
+ * @param {object} res
+ * @returns {array} array of new notes
+ */
+router.post('/notes/seed', async (req, res) => {
   try {
     const createNotes = await Note.bulkCreate([
       {

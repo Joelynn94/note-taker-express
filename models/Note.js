@@ -11,9 +11,13 @@ const Note = sequelize.define(
     },
     title: {
       type: DataTypes.STRING,
+      allowNull: false,
+      notEmpty: true,
     },
     text: {
       type: DataTypes.TEXT,
+      allowNull: false,
+      notEmpty: true,
     },
   },
   {
