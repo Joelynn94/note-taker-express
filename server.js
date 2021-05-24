@@ -1,10 +1,6 @@
 // Dependencies
 // ===================================================
 const express = require('express');
-const mysql = require('mysql2');
-// Import the connection object
-const sequelize = require('./config/connection');
-// import routes
 const routes = require('./routes');
 
 // Sets up the Express App
@@ -20,20 +16,22 @@ app
 
 // Sets up mysql connection
 // ===================================================
-let connection = '';
+let sequelize;
 
 if (process.env.JAWSDB_URL) {
-  connection = mysql.createConnection(process.env.JAWSDB_URL);
+  sequelize = new Sequelize(process.env.JAWSDB_URL);
 } else {
-  connection = mysql.createConnection({
-    host: process.env.JAWSDB_HOST,
-    user: process.env.JAWSDB_USERNAME,
-    password: process.env.JAWSDB_PASSWORD,
-    database: process.env.JAWSDB_DATABASE,
-  });
+  sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PW,
+    {
+      host: 'localhost',
+      dialect: 'mysql',
+      port: 3306,
+    }
+  );
 }
-
-connection.connect();
 
 // Testing sequelize connection
 // ===================================================
